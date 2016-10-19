@@ -23,7 +23,7 @@ leaflet_layer_control.init = function(){
     leaflet_layer_control.hidden_panels = site_settings.hidden_panels ? site_settings.hidden_panels[aoi_feature_edit.status] : null;
     if (!leaflet_layer_control.hidden_panels) {
         leaflet_layer_control.hidden_panels = {
-            "Awaiting Imagery" : ["Feature Details", "Geo Overview", "Layer Comparison", "Rotation Helper", "Geo Layers for Map"],
+            "Awaiting Imagery" : ["Feature Details", "Geo Overview", "Layer Comparison", "Rotation Helper", "Data Layers"],
             "In work" : [ "Imagery Query"]
         };
     }
@@ -1594,7 +1594,7 @@ leaflet_layer_control.filetypeHelper = function(fileHandle, mimes,fileSuffix) {
 
     leaflet_layer_control.$tree = $tree;
     leaflet_layer_control.lastSelectedNodes = $tree.fancytree("getTree").getSelectedNodes();
-    var $content = leaflet_layer_control.buildAccordionPanel($accordion,"Geo Layers for Map");
+    var $content = leaflet_layer_control.buildAccordionPanel($accordion,"Data Layers");
 
     $tree.appendTo($content);
     leaflet_layer_control.importNode = $("#layers_tree_control").fancytree("getRootNode").addChildren({title:"Imports", key:"imports", folder:true, selected:true});
@@ -1609,11 +1609,14 @@ leaflet_layer_control.filetypeHelper = function(fileHandle, mimes,fileSuffix) {
 
     leaflet_layer_control.addLayerControlInfoPanel($content);
     
+    var analyticsContent = leaflet_layer_control.buildAccordionPanel($accordion, "Analytics");
+    leaflet_layer_control.addLayerControlInfoPanel(analyticsContent);
+
     leaflet_layer_control.initializeFileUploads();
 
 
     // if we aren't showing the layer panel, uncheck 'Data Feeds'
-    var hidden = $.inArray("Geo Layers for Map", leaflet_layer_control.hidden_panels) > -1;
+    var hidden = $.inArray("Data Layers", leaflet_layer_control.hidden_panels) > -1;
     if (hidden) {
         var df = _.findWhere(leaflet_layer_control.lastSelectedNodes, {title: "Data Feeds"});
         if (df) {

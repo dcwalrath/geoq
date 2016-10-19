@@ -79,7 +79,7 @@ class LayerForm(StyledModelForm):
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Fieldset(None, 'name', 'type', 'url', 'layer', 'attribution', 'description'),
+            Fieldset(None, 'name', 'type', 'url', 'layer', 'layer_category', 'attribution', 'description'),
             HTML('<hr/><p><a class="btn" data-toggle="collapse" data-target="#more-options">extended form options &raquo;</a></p>'),
             Fieldset('Advanced',
                      'image_format',

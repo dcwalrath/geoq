@@ -612,9 +612,11 @@ aoi_feature_edit.map_init = function (map, bounds) {
     });
 
     // for some reason nginx isn't keeping MAX_ZOOM defined in settings.py. TODO: Figure out why
+
     map.options.maxZoom = 18;
 
     var custom_map = aoi_feature_edit.aoi_map_json || {};
+
     aoi_feature_edit.map = map;
 
     var baseLayers = {};
@@ -672,6 +674,7 @@ aoi_feature_edit.map_init = function (map, bounds) {
         var layers = _.filter(custom_map.layers,function(l){
            return (l.type!="Social Networking Link" && l.type!="Web Data Link")
         });
+	
         _.each(layers, function (layer_data) {
             var built_layer = leaflet_helper.layer_conversion(layer_data, map);
             if (! built_layer) {
@@ -1398,6 +1401,7 @@ aoi_feature_edit.buildTreeLayers = function(){
         var layers = [];
         try {
             var all_layers = JSON.parse(aoi_feature_edit.aoi_map_json.all_layers);
+
             layers = _.filter(all_layers, function(l){
                 return ((l.type == "WMS" || l.type == "WMTS") && l.transparent == false);
             });
@@ -1452,18 +1456,79 @@ aoi_feature_edit.buildTreeLayers = function(){
     options.titles.push('Features');
     options.layers.push(aoi_feature_edit.layers.features);
 
-    options.titles.push('Data Feeds');
-    options.layers.push(aoi_feature_edit.layers.overlays);
+    //CHANGED 10/11/16, Constance Hilliard, Penn State ARL
 
+    options.titles.push('Data Feeds');
+    var overlaysInCategory = filterOverlaysByCategory(null, aoi_feature_edit.layers.overlays);
+    options.layers.push(overlaysInCategory);
+   
     options.titles.push('Social Networking Feeds');
     options.layers.push(aoi_feature_edit.layersOfType("Social Networking Link",'social'));
 
     options.titles.push('GeoJump Data Lookups');
     options.layers.push(aoi_feature_edit.layersOfType("Web Data Link",'weblinks'));
 
+ 
+    //ADDED 10/10/16, Constance Hilliard, Penn State ARL		
+    console.log(aoi_feature_edit.layers.overlays)
+    options.titles.push('Penn State');
+    overlaysInCategory = filterOverlaysByCategory('Penn State', aoi_feature_edit.layers.overlays);
+    options.layers.push(overlaysInCategory);
+
+    options.titles.push('Local');
+    overlaysInCategory = filterOverlaysByCategory('Local', aoi_feature_edit.layers.overlays);
+    options.layers.push(overlaysInCategory);
+    
+    options.titles.push('Regional');
+    overlaysInCategory = filterOverlaysByCategory('Regional', aoi_feature_edit.layers.overlays);
+    options.layers.push(overlaysInCategory);
+
+    options.titles.push('State');
+    overlaysInCategory = filterOverlaysByCategory('State', aoi_feature_edit.layers.overlays);
+    options.layers.push(overlaysInCategory);
+
+    options.titles.push('FEMA Region 1');
+    overlaysInCategory = filterOverlaysByCategory('FEMA Region 1', aoi_feature_edit.layers.overlays);
+    options.layers.push(overlaysInCategory);
+
+    options.titles.push('FEMA Region 2');
+    overlaysInCategory = filterOverlaysByCategory('FEMA Region 2', aoi_feature_edit.layers.overlays);
+    options.layers.push(overlaysInCategory);
+
+    options.titles.push('FEMA Region 3');
+    overlaysInCategory = filterOverlaysByCategory('FEMA Region 3', aoi_feature_edit.layers.overlays);
+    options.layers.push(overlaysInCategory);
+
+    options.titles.push('Federal');
+    overlaysInCategory = filterOverlaysByCategory('Federal', aoi_feature_edit.layers.overlays);
+    options.layers.push(overlaysInCategory);
+
+    options.titles.push('Commercial');
+    overlaysInCategory = filterOverlaysByCategory('Commercial', aoi_feature_edit.layers.overlays);
+    options.layers.push(overlaysInCategory);
 
     options = removeEmptyParents(options);
     return options;
+};
+
+filterOverlaysByCategory = function (category, overlays){
+	var returnArray = [];
+
+	for(var i = 0;i<overlays.length;i++){
+		var actualCategory = overlays[i].config.layer_category;
+
+		if(actualCategory == undefined || actualCategory == ""){
+			actualCategory = null
+		}
+		//console.log("layer "+i+" options value:" + overlays[i].options.layer_category)
+		//console.log("layer "+i+" config  value:" + overlays[i].config.layer_category)
+		if(actualCategory  ==  category){
+			returnArray.push(overlays[i]);
+		}
+	}
+
+	return returnArray;
+
 };
 
 aoi_feature_edit.layersOfType = function(layerType,layers_sub_name){

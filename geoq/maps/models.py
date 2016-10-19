@@ -98,6 +98,21 @@ EDITABLE_LAYER_TYPES = (
                         ('OSM MapEdit','OSM MapEdit'),
 )
 
+"""
+ADDED 10/7/2016, Constance Hilliard, Penn State ARL
+"""
+LAYER_CATEGORIES = (
+                    ('Commercial', 'Commercial'),
+                    ('Federal', 'Federal'),
+                    ('FEMA Region 1', 'FEMA Region 1'),
+                    ('FEMA Region 2', 'FEMA Region 2'),
+                    ('FEMA Region 3', 'FEMA Region 3'),
+                    ('State', 'State'),
+                    ('Regional', 'Regional'),
+                    ('Local', 'Local'),
+                    ('Penn State', 'Penn State'),
+)
+
 INFO_FORMATS = [(n, n) for n in sorted(['application/vnd.ogc.wms_xml',
                                        'application/xml', 'text/html', 'text/plain'])]
 
@@ -118,6 +133,10 @@ class Layer(models.Model):
     description = models.TextField(max_length=800, null=True, blank=True, help_text='Text to show in layer chooser, please be descriptive - this will soon be searchable.')
     attribution = models.CharField(max_length=200, null=True, blank=True, help_text="Attribution from layers to the map display (will show in bottom of map when layer is visible).")
     token = models.CharField(max_length=400, null=True, blank=True, help_text='Authentication token, if required (usually only for secure layer servers).')
+    """
+    ADDED 10/7/2016, Constance Hilliard, Penn State ARL
+    """
+    layer_category = models.CharField(choices=LAYER_CATEGORIES, max_length=75, blank=True, help_text='Category referencing the scope of the Layer')
 
     ## Advanced layer options
     objects = models.GeoManager()
@@ -170,6 +189,7 @@ class Layer(models.Model):
             "format": self.image_format,
             "type": self.type,
             "url": self.url,
+	    "layer_category": self.layer_category,
             "subdomains": self.get_layer_urls(),
             "layer": self.layer,
             "transparent": self.transparent,
@@ -240,6 +260,8 @@ class Map(models.Model):
                 "url": map_layer.layer.url,
                 "subdomains": map_layer.layer.get_layer_urls(),
                 "layer": map_layer.layer.layer,
+		#ADDED 10/11/16, Constance Hilliard, Penn State ARL
+		"layer_category" : map_layer.layer.layer_category,
                 "shown": map_layer.shown,
                 "transparent": map_layer.layer.transparent,
                 "opacity": map_layer.opacity,

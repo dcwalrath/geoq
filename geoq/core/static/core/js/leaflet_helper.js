@@ -31,7 +31,7 @@ leaflet_helper.proxify = function (url) {
     return proxiedURL;
 };
 leaflet_helper.layer_conversion = function (lyr, map) {
-
+	
     var options = {
         layers: lyr.layer,
         format: lyr.format,
@@ -43,6 +43,8 @@ leaflet_helper.layer_conversion = function (lyr, map) {
         visibile: lyr.shown,
         url: lyr.url,
         name: lyr.name,
+	//ADDED 10/10/16, Constance Hilliard, Penn State ARL
+	layer_category: lyr.layer_category,
         details: lyr.details
     };
 
@@ -175,7 +177,6 @@ leaflet_helper.layer_conversion = function (lyr, map) {
             }
             outputLayer.addLayer(mageLayer);
         });
-
     }
 
     //Make sure the name is set for showing up in the layer menu
