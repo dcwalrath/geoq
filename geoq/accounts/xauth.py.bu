@@ -1,0 +1,6 @@
+from django.contrib.auth.backends import RemoteUserBackend
+
+class ADLdapRemoteUserBackend(RemoteUserBackend):
+    def clean_username(self, username):
+        """ removes @FQDN portion and also limits it to first 30 characters """
+        return username.split("@")[0][0:30]
