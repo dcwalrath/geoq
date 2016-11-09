@@ -215,6 +215,16 @@ class Layer(models.Model):
         ordering = ["name"]
 
 
+class AnalyticsTask(models.Model):
+    task = models.CharField(max_length=75)
+    
+    def __unicode__(self):
+        return '{0}'.format(self.task)
+    
+    class Meta:
+        ordering = ["task"]
+
+
 class Map(models.Model):
     """
     A Map aggregates several layers together.

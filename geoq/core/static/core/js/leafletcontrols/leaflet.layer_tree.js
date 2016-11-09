@@ -54,7 +54,6 @@ leaflet_layer_control.initDrawer = function(){
     leaflet_layer_control.addRotationHelper($accordion);
     leaflet_layer_control.addYouTube($accordion);
 
-
     //The Layer Controls should also be built and added later in another script, something like:
     // var options = aoi_feature_edit.buildTreeLayers();
     // leaflet_layer_control.addLayerControl(map, options, $accordion);
@@ -346,6 +345,42 @@ leaflet_layer_control.addGeoOverview = function($accordion) {
     });
 }
 
+leaflet_layer_control.getLayerList = function() {	
+	function escapeHtml(str) {
+	    var div = document.createElement('div');
+	    div.appendChild(document.createTextNode(str));
+	    return div.innerHTML;
+	}
+
+	var overlays = aoi_feature_edit.layers.base.concat(aoi_feature_edit.layers.overlays);
+    var optionHTML = "";
+    
+    for(var i = 0; i<overlays.length; i++) {
+        optionHTML += "<option value='" + i + "'>" + escapeHtml(overlays[i].name) + "</option>";
+    }
+    
+    return optionHTML;
+};
+
+leaflet_layer_control.addAnalytics = function($accordion) {
+	 var c = leaflet_layer_control.buildAccordionPanel($accordion,"Analytics");
+	
+	 var chtml = "<div>" +
+	    "<div style='text-align: left'>Layers: " +
+	    "    <select id='analyticsSelect'></select><br /> Analysis type: " +
+	    "    <select id='tasksSelect'><option value=\"0\">Line of sight</option><option value=\"1\">NDVI</option></select>"+
+	    "</div>"+
+	    " <div style='text-align: center'>"+
+	    "    <button id='comparisonButton' onclick=\"runAnalyticsTask($('#analyticsSelect').val(), $('#tasksSelect').val());\">Run</button>"+
+	    " </div>"+
+	    "</div>";
+	    var cdom = $(chtml);
+	    cdom.appendTo(c);
+	    
+	    var optionHTML = leaflet_layer_control.getLayerList();
+        $("#analyticsSelect").html(optionHTML).prop("selectedIndex", 0);	    
+};
+
 leaflet_layer_control.addLayerComparison = function($accordion) {
 
     var c = leaflet_layer_control.buildAccordionPanel($accordion,"Layer Comparison");
@@ -367,16 +402,12 @@ leaflet_layer_control.addLayerComparison = function($accordion) {
     cdom.appendTo(c);
     var overlays = aoi_feature_edit.layers.base.concat(aoi_feature_edit.layers.overlays);
 
-
     if(!overlays || overlays.length < 2) {
         var cb = document.getElementById("comparisonButton");
         cb.disabled = true;
         cb.innerHTML = "Unavailable";
     } else {
-        var optionHTML = "";
-        for(var i = 0; i<overlays.length; i++) {
-            optionHTML += "<option value='" + i + "'>" + overlays[i].name + "</option>";
-        }
+        var optionHTML = leaflet_layer_control.getLayerList();
         $("#comparisonLayer1").html(optionHTML).prop("selectedIndex", 0);
         $("#comparisonLayer2").html(optionHTML).prop("selectedIndex", 1);
     }
@@ -1599,7 +1630,6 @@ leaflet_layer_control.filetypeHelper = function(fileHandle, mimes,fileSuffix) {
     $tree.appendTo($content);
     leaflet_layer_control.importNode = $("#layers_tree_control").fancytree("getRootNode").addChildren({title:"Imports", key:"imports", folder:true, selected:true});
 
-
     $('<div id="importDragTarget" title="Drag GeoJSON and KML files or Shapefile zip archives here" style="text-align: center;border: solid;border-width: thin;">Drag & Drop Import</div>')
     .appendTo($content);
 
@@ -1609,9 +1639,8 @@ leaflet_layer_control.filetypeHelper = function(fileHandle, mimes,fileSuffix) {
 
     leaflet_layer_control.addLayerControlInfoPanel($content);
     
-    var analyticsContent = leaflet_layer_control.buildAccordionPanel($accordion, "Analytics");
-    leaflet_layer_control.addLayerControlInfoPanel(analyticsContent);
-
+    leaflet_layer_control.addAnalytics($accordion);
+    
     leaflet_layer_control.initializeFileUploads();
 
 
