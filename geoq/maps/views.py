@@ -229,16 +229,29 @@ class FeatureTypeDelete(DeleteView):
         #tell user that is was sucessful.
         return reverse('feature-type-list')
 
-
 class LayerListView(ListView):
 
     model = Layer
+    
+    #ADDED 12/15/16 Constance Hilliard Penn State ARL
+    category_options = model.get_category_options(Layer())
 
+    def get_queryset(self):
+        qs = super(LayerListView, self).get_queryset()
+        category_select = self.kwargs.get('category_select')
+        if category_select is None:
+            return qs
+        elif category_select == 'null':
+            return qs.filter(layer_category=None)
+        else:
+            return qs.filter(layer_category=self.kwargs['category_select'])
+ 
     def get_context_data(self, **kwargs):
         context = super(LayerListView, self).get_context_data(**kwargs)
         context['admin'] = self.request.user.has_perm('maps.add_layer')
+	context['category_options'] = self.category_options
+        context['category_select'] = self.kwargs.get('category_select')
         return context
-
 
 class LayerImport(ListView):
 

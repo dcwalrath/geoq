@@ -19,6 +19,33 @@
                 </ul>
             </div>
             {% endif %}
+	    <br/>
+	    <br/>
+	    <br/>
+	    <div style="vertical-align: middle;">
+		    <div style="display: inline-block; position: relative; top: -6px;">Layer category filter: </div>
+		    <select id="category_select" name="category_select">
+			<option value=""
+                                {% if category_select == None %}
+                                     selected
+                                {% endif %}
+                        >All</option>
+                        <option value="null" 
+                                {% if category_select == 'null' %}
+                                     selected
+                                {% endif %}
+                        >Unknown</option>
+			{% for category, name in category_options %}
+			    <option value="{{category}}" 
+                                {% if category_select == category %}
+                                     selected 
+                                {% endif %}
+                            >{{name}}</option>
+			{% endfor %}
+		    </select>
+		    <input type="button" style="position: relative; top: -6px;" class="btn" type="submit" name="" method="" value="Submit"
+                     onclick="window.location='../layers/' + encodeURIComponent($('#category_select').val());" />
+	    </div>
         </div>
         <div class="row"><span class="span6"/></div>
         <div>

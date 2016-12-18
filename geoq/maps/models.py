@@ -182,6 +182,12 @@ class Layer(models.Model):
         """
         return self.layer_params
 
+    """
+    ADDED 12/15/16 Constance Hilliard Penn State ARL
+    """
+    def get_category_options(self):
+	return [list(i) for i in LAYER_CATEGORIES]
+
     def layer_json(self):
         return {
             "id": self.id,
