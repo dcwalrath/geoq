@@ -47,6 +47,8 @@ L.MAGELayer = L.GeoJSON.extend({
         debug: true,
         url: '/mage/api',
         event: "None",
+        startDate: undefined,
+        type: "observations",
         refresh: 300000
     },
 
@@ -55,7 +57,12 @@ L.MAGELayer = L.GeoJSON.extend({
         this._layers = {};
 
         L.Util.setOptions(this, options);
-        this.options.onEachFeature = this.onEachFeature;
+
+        if (this.options.type === "users") {
+            this.options.onEachFeature = this.onEachUserFeature;
+        } else {
+            this.options.onEachFeature = this.onEachObservationFeature;
+        }
 
 
         var mage_callback = function (msg) {
@@ -89,6 +96,20 @@ L.MAGELayer = L.GeoJSON.extend({
 
                 // signal data loaded
                 _this.fire("MageLoaded");
+            } else if (msg.users_loading) {
+                console.log('MAGE users loading');
+                _this.clearLayers();
+            } else if (msg.users_loaded) {
+                console.log('MAGE users loaded');
+
+                var fc = {
+                    "type": "FeatureCollection",
+                    "features": magehelper.getAllUsers()
+                }
+                _this.addData(fc);
+
+                // signal data loaded
+                _this.fire("MageLoaded");
             }
         };
 
@@ -96,8 +117,12 @@ L.MAGELayer = L.GeoJSON.extend({
         var load_callback = function (data, textStatus, jqxhr) {
             console.log('magehelper loaded. Trying to download events');
             magehelper.setUrl(options.url);
+            if (_this.options.parameters) {
+                magehelper.setParameters(_this.options.parameters);
+            }
 
             magehelper.squawk(mage_callback);
+            magehelper.getAllUsers();
             magehelper.loadEvents();
         };
 
@@ -106,12 +131,17 @@ L.MAGELayer = L.GeoJSON.extend({
         // 5 Minute Refresh
         setInterval(function () {
             _this.clearLayers();
-            magehelper.loadEvents();
+            if (_this.options.type === "users") {
+                magehelper.loadUsers();
+            } else {
+                magehelper.loadEvents();
+            }
+
         }, _this.options.refresh)
 
     },
 
-    onEachFeature: function (feature, layer) {
+    onEachObservationFeature: function (feature, layer) {
         window.lastfl = [feature, layer];
         if (feature.properties) {
             var props = feature.properties;
@@ -124,7 +154,7 @@ L.MAGELayer = L.GeoJSON.extend({
                     magehelper.getCurrentEvent(), t);
                 var obIcon = L.icon({
                     iconUrl: iurl,
-                    iconSize: [72 / 2, 92 / 2],
+                    iconSize: [72 / 2, 92 / 2]
                 });
                 layer.setIcon(obIcon);
 
@@ -151,6 +181,27 @@ L.MAGELayer = L.GeoJSON.extend({
                 html += p + ": " + props[p] + "<br />";
             }
             layer.bindPopup(html);
+        }
+    },
+
+    onEachUserFeature: function (feature, layer) {
+        window.lastfl = [feature, layer];
+        if (feature.id) {
+            var id = feature.id;
+            var html = "";
+            var userinfo = magehelper.getUser(id);
+            if (userinfo) {
+                html += "<p>Name: " + userinfo.displayName + "<br>";
+                html += "Email: " + userinfo.email + "<br>";
+                html += "Last Updated: " + userinfo.lastUpdated + "<br></p>";
+                layer.bindPopup(html);
+            }
+           var iurl = magehelper.getUserIconURL();
+            var uIcon = L.icon({
+                iconUrl: iurl,
+                iconSize: [8,8]
+            });
+            layer.setIcon(uIcon);
         }
     },
 

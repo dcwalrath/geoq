@@ -90,7 +90,7 @@ leaflet_helper.layer_conversion = function (lyr, map) {
             log.warn('Unable to create WMTS layer: ' + e.toString());
         }
     } else if (lyr.type == 'ESRI Tiled Map Service' && esriPluginInstalled) {
-        outputLayer = new L.esri.tiledMapLayer(lyr.url, layerOptions);
+        outputLayer = L.esri.tiledMapLayer(layerOptions);
     } else if (lyr.type == 'ESRI Dynamic Map Layer' && esriPluginInstalled) {
         // SRJ - DynamicMapLayer looking for an array passed in
         try {
@@ -98,9 +98,12 @@ leaflet_helper.layer_conversion = function (lyr, map) {
         } catch (err) {
             layerOptions.layers = [];
         }
-        outputLayer = new L.esri.dynamicMapLayer(lyr.url, layerOptions);
+        // this layer disables features as it wants to be on top. Position it behind other overlays
+        layerOptions['position'] = "back";
+
+        outputLayer = L.esri.dynamicMapLayer(layerOptions);
     } else if (lyr.type == 'ESRI Feature Layer' && esriPluginInstalled) {
-        outputLayer = new L.esri.featureLayer(lyr.url, layerOptions);
+        outputLayer = L.esri.featureLayer(layerOptions);
         if (layerOptions.popupTemplate) {
             var template = layerOptions.popupTemplate;
             outputLayer.bindPopup(function (feature) {
@@ -111,7 +114,7 @@ leaflet_helper.layer_conversion = function (lyr, map) {
         if (layerOptions.createMarker) {
             layerOptions.createMarker = leaflet_helper.createMarker[layerOptions.createMarker];
         }
-        outputLayer = new L.esri.clusteredFeatureLayer(lyr.url, layerOptions);
+        outputLayer = L.esri.Cluster.FeatureLayer(layerOptions);
     } else if (lyr.type == 'GeoJSON' || lyr.type == 'Social Networking Link') {
         outputLayer = leaflet_helper.constructors.geojson(lyr, map);
 
@@ -165,9 +168,11 @@ leaflet_helper.layer_conversion = function (lyr, map) {
     } else if (lyr.type == 'OpenSensorHub') {
         outputLayer = new L.SOS(map, layerOptions);
     } else if (lyr.type == 'MAGE') {
+        layerOptions.type = "observations";
         var mageLayer = new L.MAGELayer(map, layerOptions);
         outputLayer = L.markerClusterGroup({
             spiderfyDistanceMultiplier: 2,
+            disableClusteringAtZoom: 18,
             spiderLegPolylineOptions: { weight: 2, color: '#000', opacity: 1.0}
         });
         mageLayer.on("MageLoaded", function(e) {
@@ -177,6 +182,9 @@ leaflet_helper.layer_conversion = function (lyr, map) {
             }
             outputLayer.addLayer(mageLayer);
         });
+    } else if (lyr.type == 'MAGE Users') {
+        layerOptions.type = "users";
+        outputLayer = new L.MAGELayer(map, layerOptions);
     }
 
     //Make sure the name is set for showing up in the layer menu
