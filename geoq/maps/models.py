@@ -89,6 +89,7 @@ SERVICE_TYPES = (
                 ('NWS Weather Alerts', 'NWS Weather Alerts'),
                 ('OpenSensorHub','OpenSensorHub'),
                 ('MAGE','MAGE'),
+                ('MAGE Users', 'MAGE Users'),
                 #('MapBox', 'MapBox'),
                 #('TileServer','TileServer'),
                 #('GetCapabilities', 'GetCapabilities'),
@@ -182,6 +183,12 @@ class Layer(models.Model):
         Returns the layer_params attribute, which should be json
         """
         return self.layer_params
+
+    """
+    ADDED 12/15/16 Constance Hilliard Penn State ARL
+    """
+    def get_category_options(self):
+	return [list(i) for i in LAYER_CATEGORIES]
 
     def layer_json(self):
         return {

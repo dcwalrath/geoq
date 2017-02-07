@@ -56,11 +56,6 @@ urlpatterns = patterns('',
         login_required(create_update_map),
         name='map-update'),
 
-    # Layer CRUD Views
-    url(r'^layers/?$',
-        LayerListView.as_view(queryset=Layer.objects.all()),
-                         name='layer-list'),
-
     url(r'^layers/create/?$',
         login_required(CreateView.as_view(template_name='core/crispy_form.html', form_class=LayerForm)),
         name='layer-create'),
@@ -79,6 +74,14 @@ urlpatterns = patterns('',
         LayerImport.as_view(),
         name='layer-import'),
 
+    # Layer CRUD Views
+    url(r'^layers/(?P<category_select>.+)/?$',
+        LayerListView.as_view(),
+                         name='layer-list'),
+
+    url(r'^layers/?$',
+       LayerListView.as_view(queryset=Layer.objects.all()),
+                        name='layer-list'),
 
     # MapLayer CRUD Views
 
