@@ -373,7 +373,10 @@ leaflet_layer_control.addAnalytics = function($accordion) {
 	    " <div style='text-align: center'>"+
 	    "    <button id='comparisonButton' onclick=\"runAnalyticsTask($('#analyticsSelect').val(), $('#tasksSelect').val());\">Run</button>"+
 	    " </div>"+
-	    "</div>";
+	    " <div style='text-align: left'>"+
+	    "    <label id='progress'>Progress... </label>"+
+	    " </div>"+
+"</div>"
 	    var cdom = $(chtml);
 	    cdom.appendTo(c);
 	    

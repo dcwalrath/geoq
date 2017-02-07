@@ -91,7 +91,11 @@ leaflet_helper.layer_conversion = function (lyr, map) {
         }
     } else if (lyr.type == 'ESRI Tiled Map Service' && esriPluginInstalled) {
         outputLayer = new L.esri.tiledMapLayer(lyr.url, layerOptions);
-    } else if (lyr.type == 'ESRI Dynamic Map Layer' && esriPluginInstalled) {
+
+    } else if (lyr.type == 'ESRI Image Map Layer' && esriPluginInstalled) {
+	outputLayer = new L.esri.imageMapLayer(lyr.url, layerOptions);
+ 
+   } else if (lyr.type == 'ESRI Dynamic Map Layer' && esriPluginInstalled) {
         // SRJ - DynamicMapLayer looking for an array passed in
         try {
             layerOptions.layers = JSON.parse(layerOptions.layers);
