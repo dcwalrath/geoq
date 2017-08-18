@@ -10,6 +10,7 @@
     {% import_django_select2_js %}
      <script src="http://envi-gsf.sil.arl.psu.edu:9191/gsfTasker/task_handler.js"></script>
     <script src="http://envi-gsf.sil.arl.psu.edu:9191/gsfTasker/GSFUtils.js"></script>
+    <script src="http://geospatial-desktop.sil.arl.psu.edu:8080/apps/mage/mageFilter.js"></script>
     <script src="{{ STATIC_URL }}core/js/jquery-migrate-1.2.1.min.js"></script>
     <script src="{{ STATIC_URL }}core/js/Leaflet-WFST.min.js"></script>
     <script src="{{ STATIC_URL }}core/js/leaflet_helper.js"></script>
@@ -17,6 +18,8 @@
     <script src="{{ STATIC_URL }}core/js/KML.js"></script>
     <script src="{{ STATIC_URL }}core/js/aoi_feature_edit.js"></script>
     <script src="{{ STATIC_URL }}core/js/analytics_tasks.js"></script>
+    <script src="{{ STATIC_URL }}core/js/open_3d.js"></script>
+    <script src="{{ STATIC_URL }}core/js/bombThreat.js"></script>
     <script src="{{ STATIC_URL }}core/js/Math.uuid.js"></script>
     <script src="{{ STATIC_URL }}core/js/dndsupport.js"></script>
     <script src="{{ STATIC_URL }}core/js/leafletcontrols/leaflet.simple_button.js"></script>
@@ -52,6 +55,7 @@
     <script src="{{ STATIC_URL }}core/js/YouTubeSearch.js"></script>
     <script src="{{ STATIC_URL }}mage/js/mage-leaflet.js"></script>
     <script src="{{ STATIC_URL }}bootstrap/js/bootstrap-select.min.js"></script>
+    <script src="https://js.arcgis.com/4.4/"></script>   
 
     {% for layer in object.job.map.layers %}{% if layer.layer.type == 'Google Maps' %}
     <script src="{{ layer.layer.url }}maps/api/js?v=3&sensor=false"></script>

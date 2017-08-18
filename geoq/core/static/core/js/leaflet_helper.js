@@ -47,6 +47,17 @@ leaflet_helper.layer_conversion = function (lyr, map) {
 	layer_category: lyr.layer_category,
         details: lyr.details
     };
+    //walrath 08162017
+    var shapeLayerOptions = {
+        style: function(feature) {
+        	switch (feature.properties.CLASS_NAME) {
+            		case 'Not Visible': return {color: "#f74557"};
+            		case 'Visible':   return {color: "#42f44e"};
+        	}
+	},
+	opacity: 0.7
+    };
+    //end walrath
 
     var layerParams = lyr.layerParams || {};
 
@@ -166,7 +177,7 @@ leaflet_helper.layer_conversion = function (lyr, map) {
     } else if (lyr.type == 'WFS') {
         outputLayer = new L.WFS(layerOptions);
     } else if (lyr.type == 'ESRI Shapefile') {
-        outputLayer = new L.shapefile(lyr.url, layerOptions);
+        outputLayer = new L.shapefile(lyr.url, shapeLayerOptions);
     } else if (lyr.type == 'NWS Weather Alerts') {
         outputLayer = new L.NWSIconsLayer(true, map, layerOptions);
     } else if (lyr.type == 'OpenSensorHub') {

@@ -362,16 +362,16 @@ leaflet_layer_control.getLayerList = function() {
     return optionHTML;
 };
 
-leaflet_layer_control.addOtherAnalytics = function($accordion) {
-	 var c = leaflet_layer_control.buildAccordionPanel($accordion,"Other Analytics");
+leaflet_layer_control.addAnalytics = function($accordion) {
+	 var c = leaflet_layer_control.buildAccordionPanel($accordion,"Analytics");
 	
 	 var chtml = "<div>" +
 	    "<div style='text-align: left'>Layers: " +
 	    "    <select id='analyticsSelect'></select><br /> Analysis type: " +
-	    "    <select id='tasksSelect'><option value=\"0\">NDVI</option></select>"+
+	    "    <select id='tasksSelect'><option value=\"0\">Line of sight</option><option value=\"1\">NDVI</option></select>"+
 	    "</div>"+
 	    " <div style='text-align: center'>"+
-	    "    <button id='comparisonButton' onclick=\"runOtherAnalytics($('#analyticsSelect').val(), $('#tasksSelect').val());\">Run</button>"+
+	    "    <button id='comparisonButton' onclick=\"runAnalyticsTask($('#analyticsSelect').val(), $('#tasksSelect').val());\">Run</button>"+
 	    " </div>"+
 	    " <div style='text-align: left'>"+
 	    "    <label id='progress'> </label>"+
@@ -383,118 +383,6 @@ leaflet_layer_control.addOtherAnalytics = function($accordion) {
 	    var optionHTML = leaflet_layer_control.getLayerList();
         $("#analyticsSelect").html(optionHTML).prop("selectedIndex", 0);	    
 };
-
-// dcwalrath 08082017
-leaflet_layer_control.addViewshed = function($accordion) {
-         var c = leaflet_layer_control.buildAccordionPanel($accordion,"Viewshed");
-
-         var chtml = "<div>" +
-             "<div style='text-align: left'>Observer Location " +
-	    "    <select id='observerLocation'><option value=\"0\">-SELECT-</option><option value=\"1\">Beaver Stadium Press Box</option>"+
-        "     <option value=\"2\">Bryce Jordan Center</option><option value=\"3\">Old Main</option>"+
-        "     <option value=\"4\">HUB</option><option value=\"5\">Rec Hall</option></select>"+
-	    "</div>"+
-             "<br>" +
-             
-             "<div style='text-align: left'>"+
-			"Observation Direction: <input id='azimuth' type='text' name='azimuth' value='135.0'>"+
-             "</div>" +
-             "<div style='text-align: left'>"+
-			"Observation Tilt: <input id='pitchAngle' type='text' name='pitchAngle' value='-45.0'>"+
-             "</div>" +
-             "<div style='text-align: left'>"+
-			"Horizontal FOV: <input id='hfov' type='text' name='hfov' value='120.0'>"+
-             "</div>" +
-             "<div style='text-align: left'>"+
-			"Vertical FOV: <input id='vfov' type='text' name='vfov' value='60.0'>"+
-             "</div>" +
-             
-             "<div style='text-align: left'>"+
-			"Range: <input id='range' type='text' name='range' value='1000.0'>"+
-             "</div>" +
-            " <div style='text-align: center'>"+
-	       "    <button id='runViewshed' onclick=\"runViewshed($('#observerLocation').val(), $('#azimuth').val(), $('#hfov').val(),$('#vfov').val(), $('#pitchAngle').val(), $('#range').val());\">Run</button>"+
-	       " </div>"+
-        " </div>"
-         
-            var cdom = $(chtml);
-            cdom.appendTo(c);
-};
-
-// dcwalrath 008082017
-leaflet_layer_control.addChangeDetection = function($accordion) {
-	 
-         var c = leaflet_layer_control.buildAccordionPanel($accordion,"Change Detection");
-
-         var chtml = "<div>" +
-            "<div style='text-align: left'>Image 1 " +
-	    "    <select id='inImage1'> <option value=\"0\">-SELECT-</option><option value=\"1\">image 1</option>"+
-        "     </select>"+
-	    "</div>"+
-             "<br>" +
-         "<div style='text-align: left'>Image 2 " +
-	    "    <select id='inImage2'> <option value=\"0\">-SELECT-</option><option value=\"1\">image 2</option>"+
-        "     </select>"+
-	    "</div>"+
-             "<br>" +
-            " <div style='text-align: center'>" +
-            " <button id='runChangeDetection' onclick=\"runChangeDetection($('#inImage1').val(), $('#inImage2').val());\">Run</button>" +
-            " </div>" +
-        "</div>"
-            var cdom = $(chtml);
-            cdom.appendTo(c);
-
-};
-
-// dcwalrath 04032017
-leaflet_layer_control.addCesium = function($accordion) {
-	 
-         var c = leaflet_layer_control.buildAccordionPanel($accordion,"3D");
-
-         var chtml = "<div>" +
-            " <div style='text-align: center'>" +
-            " <button id='openCesium' onclick=\"open3DView();\">Open Viewer</button>" +
-            " </div>" +
-        "</div>"
-            var cdom = $(chtml);
-            cdom.appendTo(c);
-
-};
-
-// dcwalrath 06092017
-leaflet_layer_control.addBlastRings = function($accordion) {
-         var c = leaflet_layer_control.buildAccordionPanel($accordion,"Bomb Threat");
-
-         var chtml = "<div>" +
-             "<div style='text-align: left'>IED Type " +
-	    "    <select id='iedType' onchange=\"addIED2Map($('#iedType').val());\"><option value=\"0\">-SELECT-</option><option value=\"1\">Pipe Bomb</option>"+
-        "     <option value=\"2\">Briefcase/Backpack</option><option value=\"3\">Small Sedan</option>"+
-        "     <option value=\"4\">Sedan</option><option value=\"5\">Van</option></select>"+
-	    "</div>"+
-             "<br>" +
-             " <div style='text-align: left'>" +
-            "    <button id='addFromClick' onclick=\"CreateRingsFromMapClick($('#iedType').val());\">Add rings interactively</button>"+
-            " </div>" +
-             "<br>" +
-             "<div style='text-align: left'>"+
-			"Latitude: <input id='latitude' type='text' name='latitude' value=''>"+
-             "</div>" +
-             "<div style='text-align: left'>"+
-			"Longitude: <input id='longitude' type='text' name='longitude' value=''>"+
-             "</div>" +
-            " <div style='text-align: left'>" +
-            "    <button id='addIED' onclick=\"CreateRingsFromCoords($('#iedType').val(),$('#latitude').val(),$('#longitude').val());\">Add rings from coords</button>"+
-            " </div>" +
-             "<br>" +
-             " <div style='text-align: left'>" +
-            "    <button id='removeRings' onclick=\"removeFeaturesFromGroup(rings);\">Remove rings</button>"+
-            " </div>" +
-        " </div>"
-         
-            var cdom = $(chtml);
-            cdom.appendTo(c);
-};
-
 
 leaflet_layer_control.addLayerComparison = function($accordion) {
 
@@ -1754,19 +1642,8 @@ leaflet_layer_control.filetypeHelper = function(fileHandle, mimes,fileSuffix) {
 
     leaflet_layer_control.addLayerControlInfoPanel($content);
     
-    leaflet_layer_control.addOtherAnalytics($accordion);
+    leaflet_layer_control.addAnalytics($accordion);
     
-    // dcwalrath 08082017
-    leaflet_layer_control.addViewshed($accordion);
-        
-    // dcwalrath 008082017
-    leaflet_layer_control.addChangeDetection($accordion);
-    
-    // dcwalrath 04032017
-    leaflet_layer_control.addCesium($accordion);
-    //dcwalrath 06092017
-    leaflet_layer_control.addBlastRings($accordion);
-
     leaflet_layer_control.initializeFileUploads();
 
 
@@ -2146,15 +2023,7 @@ leaflet_layer_control.initializeFileUploads = function () {
             //This takes the file and makes it a shapefile for uploading
             shp(reader.result).then(function (geojson) {
                 var features = L.geoJson(geojson, {
-                    onEachFeature: onEachFeature,
-                    //walrath 08162017
-                    style: function(features) {
-                    switch (features.properties.CLASS_NAME) {
-                        case 'Visible': return {color: "#ff0000"};
-                        case 'Not Visible':   return {color: "#0000ff"};
-                        }
-                    }
-                    //end walrath
+                    onEachFeature: onEachFeature
                     
                 })
                 //adds to the map

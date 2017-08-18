@@ -1,12 +1,22 @@
 //walrathTest
-function runAnalyticsTask (layer, taskType) {
+function runOtherAnalytics (layer, taskType) {
 
 	RunTask(layer, taskType);
 
-//	jsTest();
 
-//	$.getScript('http://envi-gsf.sil.arl.psu.edu:9191/webapp/test.js', function() {
-//	jsTest();
-//});
+
+}
+function runViewshed (location, azimuth, hfov, vfov, pitch, range) {
+
+	ViewShed(location, azimuth, hfov, vfov, pitch, range);
+
+
+
+}
+function runChangeDetection(inLayer1, inLayer2) {
+//    alert(inLayer1 + ", " + inLayer2);
+	ChangeDetection();
+
+
 
 }
